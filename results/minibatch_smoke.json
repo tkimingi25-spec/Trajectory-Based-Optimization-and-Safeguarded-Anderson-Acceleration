@@ -1,0 +1,163 @@
+{
+  "experiment": "Mini-batch SGD Anderson compatibility",
+  "created_utc": "2026-08-17T14:46:02.513046+00:00",
+  "environment": {
+    "python": "3.13.7",
+    "torch": "2.9.1+cpu",
+    "numpy": "2.4.1"
+  },
+  "config": {
+    "seeds": [
+      9000,
+      9001
+    ],
+    "epochs": 1,
+    "batch_size": 64,
+    "lr": 0.05,
+    "momentum": 0.7,
+    "model": "SmallCNNTanh",
+    "batch_schedule": "torch.randperm per epoch with per-seed generator, shared by every variant"
+  },
+  "results": {
+    "classical_batch_safeguard": {
+      "n_seeds": 2,
+      "mean_baseline": 1.557550311088562,
+      "std_baseline": 0.08798812117485899,
+      "mean_test": 1.557550311088562,
+      "std_test": 0.08798812117485899,
+      "mean_diff": 0.0,
+      "std_diff": 0.0,
+      "rel_reduction_pct": 0.0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "t_stat": 0.0,
+      "p_t": 1.0,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    },
+    "classical_full_safeguard": {
+      "n_seeds": 2,
+      "mean_baseline": 1.557550311088562,
+      "std_baseline": 0.08798812117485899,
+      "mean_test": 1.557550311088562,
+      "std_test": 0.08798812117485899,
+      "mean_diff": 0.0,
+      "std_diff": 0.0,
+      "rel_reduction_pct": 0.0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "t_stat": 0.0,
+      "p_t": 1.0,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    },
+    "classical_sparse_full_safeguard": {
+      "n_seeds": 2,
+      "mean_baseline": 1.557550311088562,
+      "std_baseline": 0.08798812117485899,
+      "mean_test": 1.557550311088562,
+      "std_test": 0.08798812117485899,
+      "mean_diff": 0.0,
+      "std_diff": 0.0,
+      "rel_reduction_pct": 0.0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "t_stat": 0.0,
+      "p_t": 1.0,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    },
+    "ito_xue_full_safeguard": {
+      "n_seeds": 2,
+      "mean_baseline": 1.557550311088562,
+      "std_baseline": 0.08798812117485899,
+      "mean_test": 1.4532760977745056,
+      "std_test": 0.056197849161152905,
+      "mean_diff": -0.1042742133140564,
+      "std_diff": 0.031790272013706086,
+      "rel_reduction_pct": 6.694757310350563,
+      "wins": 2,
+      "losses": 0,
+      "ties": 0,
+      "t_stat": -4.638714843677496,
+      "p_t": 0.1351719189889566,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    }
+  },
+  "per_seed": {
+    "baseline": [
+      1.4953333139419556,
+      1.6197673082351685
+    ],
+    "classical_batch_safeguard": [
+      1.4953333139419556,
+      1.6197673082351685
+    ],
+    "classical_full_safeguard": [
+      1.4953333139419556,
+      1.6197673082351685
+    ],
+    "classical_sparse_full_safeguard": [
+      1.4953333139419556,
+      1.6197673082351685
+    ],
+    "ito_xue_full_safeguard": [
+      1.4135382175445557,
+      1.4930139780044556
+    ],
+    "variant_infos": {
+      "classical_batch_safeguard": [
+        {
+          "jumps_attempted": 5,
+          "jumps_accepted": 0
+        },
+        {
+          "jumps_attempted": 5,
+          "jumps_accepted": 0
+        }
+      ],
+      "classical_full_safeguard": [
+        {
+          "jumps_attempted": 5,
+          "jumps_accepted": 0
+        },
+        {
+          "jumps_attempted": 5,
+          "jumps_accepted": 0
+        }
+      ],
+      "classical_sparse_full_safeguard": [
+        {
+          "jumps_attempted": 0,
+          "jumps_accepted": 0
+        },
+        {
+          "jumps_attempted": 0,
+          "jumps_accepted": 0
+        }
+      ],
+      "ito_xue_full_safeguard": [
+        {
+          "jumps_attempted": 2,
+          "jumps_accepted": 1
+        },
+        {
+          "jumps_attempted": 2,
+          "jumps_accepted": 1
+        }
+      ]
+    }
+  },
+  "notes": [
+    "This script supersedes earlier two-variant mini-batch harnesses.",
+    "The full-dataset safeguard is not a held-out validation safeguard."
+  ]
+}

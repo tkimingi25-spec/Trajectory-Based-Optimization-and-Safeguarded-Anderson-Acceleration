@@ -1,0 +1,107 @@
+{
+  "experiment": "Same-seed same-lr activation smoothness ablation",
+  "created_utc": "2026-08-17T14:46:03.799059+00:00",
+  "environment": {
+    "python": "3.13.7",
+    "torch": "2.9.1+cpu",
+    "numpy": "2.4.1"
+  },
+  "config": {
+    "seeds": [
+      7000,
+      7001
+    ],
+    "learning_rates": [
+      0.03
+    ],
+    "steps": 12,
+    "momentum": 0.7,
+    "window": 5,
+    "aa_interval": 10,
+    "dataset": "sklearn digits, full-batch training loss"
+  },
+  "results": {
+    "relu_lr_0.03": {
+      "n_seeds": 2,
+      "mean_baseline": 2.288321375846863,
+      "std_baseline": 0.003961972347418082,
+      "mean_test": 2.288321375846863,
+      "std_test": 0.003961972347418082,
+      "mean_diff": 0.0,
+      "std_diff": 0.0,
+      "rel_reduction_pct": 0.0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "t_stat": 0.0,
+      "p_t": 1.0,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    },
+    "tanh_lr_0.03": {
+      "n_seeds": 2,
+      "mean_baseline": 2.238708972930908,
+      "std_baseline": 0.013146782162306154,
+      "mean_test": 2.238708972930908,
+      "std_test": 0.013146782162306154,
+      "mean_diff": 0.0,
+      "std_diff": 0.0,
+      "rel_reduction_pct": 0.0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "t_stat": 0.0,
+      "p_t": 1.0,
+      "w_stat": NaN,
+      "p_w": 1.0,
+      "is_significant": false
+    }
+  },
+  "per_seed": {
+    "relu_lr_0.03": {
+      "baseline_losses": [
+        2.2911229133605957,
+        2.28551983833313
+      ],
+      "anderson_losses": [
+        2.2911229133605957,
+        2.28551983833313
+      ],
+      "jump_counts": [
+        {
+          "attempted": 1,
+          "accepted": 0
+        },
+        {
+          "attempted": 1,
+          "accepted": 0
+        }
+      ]
+    },
+    "tanh_lr_0.03": {
+      "baseline_losses": [
+        2.229412794113159,
+        2.2480051517486572
+      ],
+      "anderson_losses": [
+        2.229412794113159,
+        2.2480051517486572
+      ],
+      "jump_counts": [
+        {
+          "attempted": 1,
+          "accepted": 0
+        },
+        {
+          "attempted": 1,
+          "accepted": 0
+        }
+      ]
+    }
+  },
+  "notes": [
+    "Use this script to support causal activation-smoothness language.",
+    "The historical ReLU and Tanh runs remain tuned-condition comparisons."
+  ]
+}

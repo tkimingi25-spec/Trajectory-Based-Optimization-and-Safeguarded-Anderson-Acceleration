@@ -1,0 +1,60 @@
+{
+  "experiment": "Baldi-Hornik Saddle #1 baseline vs unsafeguarded Anderson",
+  "created_utc": "2026-08-17T19:33:25.558655+00:00",
+  "environment": {
+    "python": "3.13.7",
+    "torch": "2.9.1+cpu",
+    "numpy": "2.4.1"
+  },
+  "config": {
+    "saddle_type": 1,
+    "seeds": [
+      3000,
+      3001,
+      3002,
+      3003,
+      3004
+    ],
+    "steps": 150,
+    "lr": 0.05,
+    "momentum": 0.7,
+    "window": 5,
+    "aa_interval": 10,
+    "safeguard": false
+  },
+  "results": {
+    "n_seeds": 5,
+    "mean_baseline": 1.591473364830017,
+    "std_baseline": 5.331201499700045e-08,
+    "mean_test": 3.1662075519561768,
+    "std_test": 5.958079814720058e-06,
+    "mean_diff": 1.5747341871261598,
+    "std_diff": 5.990429894993188e-06,
+    "rel_reduction_pct": -98.94819617627502,
+    "wins": 0,
+    "losses": 5,
+    "ties": 0,
+    "t_stat": 587806.3428886803,
+    "p_t": 5.025903872293307e-23,
+    "w_stat": NaN,
+    "p_w": 1.0,
+    "is_significant": false
+  },
+  "per_seed": {
+    "baseline_losses": [
+      1.5914733409881592,
+      1.5914734601974487,
+      1.5914733409881592,
+      1.5914733409881592,
+      1.5914733409881592
+    ],
+    "anderson_losses": [
+      3.1662018299102783,
+      3.166201114654541,
+      3.166214942932129,
+      3.166210889816284,
+      3.1662089824676514
+    ]
+  },
+  "notes": []
+}
