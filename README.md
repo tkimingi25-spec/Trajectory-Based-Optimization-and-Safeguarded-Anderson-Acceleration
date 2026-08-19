@@ -132,3 +132,23 @@ In accordance with strict verification methodology:
 - **Ito, K., & Xue, T. (2025).** *Anderson-type acceleration method for deep neural network optimization.*
 - **Goh, G. (2017).** *Why Momentum Really Works.* Distill.
 - **Li, H., Xu, Z., Taylor, G., Studer, C., & Goldstein, T. (2018).** *Visualizing the Loss Landscape of Neural Nets.* NeurIPS.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011082.svg)](https://doi.org/10.5281/zenodo.22011082)
+[![Code License: PolyForm Noncommercial](https://img.shields.io/badge/Code%20License-PolyForm%20Noncommercial-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
+[![Report License: CC BY-NC 4.0](https://img.shields.io/badge/Report%20License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+## Citation
+
+If you reference, cite, or build upon this research report or codebase, please use the following BibTeX entry:
+
+```bibtex
+@techreport{kimingi2026trajectory,
+  author       = {Kimingi, Thomas},
+  title        = {Trajectory-Based Acceleration \& Spatial Phase-Space Telemetry in Neural Network Optimization},
+  month        = aug,
+  year         = 2026,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22011082},
+  url          = {[https://doi.org/10.5281/zenodo.22011082](https://doi.org/10.5281/zenodo.22011082)}
+}
+
+Copyright (c) 2026 Thomas Kimingi. All Rights Reserved.
