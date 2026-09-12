@@ -1,0 +1,18 @@
+name: smoothness_ablation
+model: SmallCNN_vs_SmallCNNTanh
+n_seeds: 30
+seed_start: 7000
+steps: 100
+dataset: sklearn_digits
+device: cpu
+optimizer:
+  lr: 0.05
+  momentum: 0.7
+  weight_decay: 0.0
+anderson:
+  window: 5
+  aa_interval: 10
+  reg: 1.0e-06
+  safeguard: true
+  safeguard_max_abs: 10000.0
+output_path: results/test_smoothness_ablation_summary.json

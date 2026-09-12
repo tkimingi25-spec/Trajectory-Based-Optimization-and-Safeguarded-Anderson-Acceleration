@@ -57,3 +57,7 @@ dmypy.json
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Logs and runtime artifacts
+*.log
+results/*.log
