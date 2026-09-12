@@ -236,4 +236,4 @@ def passes_strict_descent_safeguard(new_loss, old_loss):
 
 def state_is_sane(state_vec, max_abs=1e4):
     """Check that extrapolated state doesn't contain extreme values."""
-    return np.all(np.isfinite(state_vec)) and np.max(np.abs(state_vec)) < max_abs
+    return bool(np.all(np.isfinite(state_vec)) and np.max(np.abs(state_vec)) < max_abs)

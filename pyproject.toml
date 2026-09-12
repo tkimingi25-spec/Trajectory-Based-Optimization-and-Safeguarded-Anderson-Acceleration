@@ -1,0 +1,44 @@
+[project]
+name = "anderson-acceleration-research"
+version = "1.0.0"
+description = "Trajectory-based optimization and safeguarded Anderson acceleration for neural network training"
+readme = "README.md"
+license = {text = "PolyForm Noncommercial 1.0.0"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Thomas Kimingi", email = "tkimingi25@gmail.com"},
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B905",  # zip strict
+    "SIM108", # ternary operator
+]
+
+[tool.ruff.isort]
+known-first-party = ["src"]
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
