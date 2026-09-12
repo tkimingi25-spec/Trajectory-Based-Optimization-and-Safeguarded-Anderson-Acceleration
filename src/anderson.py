@@ -108,8 +108,11 @@ def anderson_extrapolate_classical(states, window, reg=1e-6):
     Returns:
         numpy array (extrapolated state) or None if insufficient history
     """
+    if not states or window < 1 or len(states) < window + 1:
+        return None
+
     recent = states[-(window + 1) :]
-    if len(recent) < window + 1:
+    if any(not isinstance(s, np.ndarray) or s.shape != states[0].shape for s in recent):
         return None
 
     X_hist = np.array(recent[:-1])  # states 0..m-1
