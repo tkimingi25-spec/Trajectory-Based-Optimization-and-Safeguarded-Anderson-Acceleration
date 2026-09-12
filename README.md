@@ -1,5 +1,10 @@
 # Anderson Acceleration & Optimization Phase-Space Telemetry
 
+[![CI](https://github.com/tkimingi25-spec/Trajectory-Based-Optimization-and-Safeguarded-Anderson-Acceleration/actions/workflows/ci.yml/badge.svg)](https://github.com/tkimingi25-spec/Trajectory-Based-Optimization-and-Safeguarded-Anderson-Acceleration/actions/workflows/ci.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011082.svg)](https://doi.org/10.5281/zenodo.22011082)
+[![Code License: PolyForm Noncommercial](https://img.shields.io/badge/Code%20License-PolyForm%20Noncommercial-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
+[![Report License: CC BY-NC 4.0](https://img.shields.io/badge/Report%20License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 A verification-driven, reproducible research codebase investigating trajectory-based training acceleration and geometric telemetry in neural network optimization.
 
 ---
@@ -22,9 +27,19 @@ This repository documents and independently reproduces a comprehensive investiga
 ## Directory Structure
 
 ```
-ANDESSON ACCELERATION/
-├── requirements.txt             # Minimal dependencies (torch, numpy, scipy, sklearn, matplotlib)
-├── README.md                    # Research overview, theoretical background & instructions
+.
+├── pyproject.toml               # Project metadata, pytest, ruff, and black configurations
+├── requirements.txt             # Core dependency specification
+├── requirements-lock.txt        # Pinned lockfile for exact environment reproducibility
+├── requirements-dev.txt         # Testing and code-quality dependencies (pytest, ruff, black)
+├── CONTRIBUTING.md              # Development setup, testing, and contribution guidelines
+├── CHANGELOG.md                 # Semantic versioning release history
+├── .env.example                 # Environment variables template
+├── build_pdf_report.py          # Publication-grade PDF report compiler (backwards-compatible wrapper)
+├── report/                      # Modular report generation engine (<250 LOC each)
+│   ├── styles.py                # Typography, color palette, and NumberedCanvas
+│   ├── sections.py              # Individual report section flowables
+│   └── build.py                 # PDF compilation orchestrator and CLI
 ├── src/
 │   ├── __init__.py
 │   ├── models.py                # TinyMLP, SmallCNN (ReLU), SmallCNNTanh (Smooth), LinearAutoencoder
@@ -44,6 +59,14 @@ ANDESSON ACCELERATION/
 │   ├── test_minibatch.py        # Test #2: Mini-batch SGD failure modes
 │   ├── test_late_training.py    # Test #3: Late-training horizon dynamics & saturation
 │   └── run_all.py               # Master runner executing all experiments sequentially
+├── tests/                       # Pytest test suite (63 unit and smoke tests)
+│   ├── conftest.py              # Shared fixtures and configurations
+│   ├── test_anderson_unit.py    # Unit tests for Anderson math, KKT solves, and safeguards
+│   ├── test_diagnostics_unit.py # Unit tests for PCA, HVP, and eigenvalue estimation
+│   ├── test_models_unit.py      # Architecture parameter count and output shape tests
+│   ├── test_statistics_unit.py  # Statistical significance and table formatting tests
+│   ├── test_training_unit.py    # Training loop integration and safeguard tests
+│   └── test_experiments_smoke.py # End-to-end crash-free smoke tests for experiments
 └── results/                     # Output figures, JSON logs, and analysis artifacts
 ```
 
@@ -53,11 +76,38 @@ ANDESSON ACCELERATION/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/anderson-acceleration-research.git
-cd "anderson-acceleration-research"
+git clone https://github.com/tkimingi25-spec/Trajectory-Based-Optimization-and-Safeguarded-Anderson-Acceleration.git
+cd Trajectory-Based-Optimization-and-Safeguarded-Anderson-Acceleration
 
-# Install minimal scientific dependencies
+# Option A: Standard install
 pip install -r requirements.txt
+
+# Option B: Exact pinned environment (recommended for 100% reproducibility)
+pip install -r requirements-lock.txt
+
+# For development, linting, and testing:
+pip install -r requirements-dev.txt
+```
+
+---
+
+## Testing & Quality Assurance
+
+Run the test suite and verify code quality with:
+
+```bash
+# Run fast unit test suite (<10s)
+pytest -q -m "not slow"
+
+# Run all 63 unit and smoke tests
+pytest -q
+
+# Run with test coverage
+pytest --cov=src --cov-report=term-missing
+
+# Run code style and formatting checks
+ruff check .
+black --check .
 ```
 
 ---
@@ -132,9 +182,14 @@ In accordance with strict verification methodology:
 - **Ito, K., & Xue, T. (2025).** *Anderson-type acceleration method for deep neural network optimization.*
 - **Goh, G. (2017).** *Why Momentum Really Works.* Distill.
 - **Li, H., Xu, Z., Taylor, G., Studer, C., & Goldstein, T. (2018).** *Visualizing the Loss Landscape of Neural Nets.* NeurIPS.
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22011082.svg)](https://doi.org/10.5281/zenodo.22011082)
-[![Code License: PolyForm Noncommercial](https://img.shields.io/badge/Code%20License-PolyForm%20Noncommercial-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
-[![Report License: CC BY-NC 4.0](https://img.shields.io/badge/Report%20License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+---
+
+## Contributing & Development
+
+We welcome contributions! Please see:
+- [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing workflows, and commit guidelines.
+- [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
+- [LICENSE](LICENSE) for terms of use under the PolyForm Noncommercial 1.0.0 license.
 
 ## Citation
 
