@@ -12,8 +12,6 @@ import sys
 
 import numpy as np
 import pytest
-import torch
-import torch.nn as nn
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -69,7 +67,6 @@ class TestEstimateLambdaMin:
         # Construct a simple symmetric matrix with known eigenvalues
         # Eigenvalues: -2, 1, 3
         eigenvalues = np.array([-2.0, 1.0, 3.0])
-        Q = np.eye(3)  # Eigenvectors are identity (diagonal matrix)
         H = np.diag(eigenvalues)
 
         def apply_hv(v):
@@ -77,9 +74,7 @@ class TestEstimateLambdaMin:
 
         lambda_min, v_min = estimate_lambda_min(apply_hv, D=3, iters=500, seed=1)
 
-        assert lambda_min == pytest.approx(-2.0, abs=0.1), (
-            f"Expected lambda_min ≈ -2.0, got {lambda_min:.4f}"
-        )
+        assert lambda_min == pytest.approx(-2.0, abs=0.1), f"Expected lambda_min ≈ -2.0, got {lambda_min:.4f}"
 
     def test_positive_definite_matrix(self):
         """For a positive definite matrix, lambda_min should be positive."""

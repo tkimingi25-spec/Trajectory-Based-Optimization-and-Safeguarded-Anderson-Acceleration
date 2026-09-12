@@ -89,9 +89,22 @@ class TestPairedAnalysis:
         """Should contain all expected keys."""
         result = paired_analysis([1.0] * 30, [0.5] * 30)
         expected_keys = {
-            "n_seeds", "mean_baseline", "std_baseline", "mean_test", "std_test",
-            "mean_diff", "std_diff", "rel_reduction_pct", "wins", "losses", "ties",
-            "t_stat", "p_t", "w_stat", "p_w", "is_significant",
+            "n_seeds",
+            "mean_baseline",
+            "std_baseline",
+            "mean_test",
+            "std_test",
+            "mean_diff",
+            "std_diff",
+            "rel_reduction_pct",
+            "wins",
+            "losses",
+            "ties",
+            "t_stat",
+            "p_t",
+            "w_stat",
+            "p_w",
+            "is_significant",
         }
         assert set(result.keys()) == expected_keys
 

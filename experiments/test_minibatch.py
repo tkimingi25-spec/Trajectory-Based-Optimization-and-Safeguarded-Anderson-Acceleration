@@ -43,7 +43,7 @@ def make_batch_schedule(n_samples, batch_size, epochs, seed):
     for _ in range(epochs):
         permutation = torch.randperm(n_samples, generator=generator)
         for start in range(0, n_samples, batch_size):
-            batches.append(permutation[start:start + batch_size])
+            batches.append(permutation[start : start + batch_size])
     return batches
 
 
@@ -216,32 +216,68 @@ def main(n_seeds=60, seed_start=9000, epochs=15, batch_size=64, output_path=None
 
         model_naive = copy.deepcopy(initial_model)
         loss_naive, info_naive = train_minibatch_anderson_classical(
-            model_naive, X, y, batches, loss_fn, lr=0.05, momentum=0.7,
-            window=5, aa_interval=5, history_stride=1, safeguard_dataset="batch"
+            model_naive,
+            X,
+            y,
+            batches,
+            loss_fn,
+            lr=0.05,
+            momentum=0.7,
+            window=5,
+            aa_interval=5,
+            history_stride=1,
+            safeguard_dataset="batch",
         )
         variant_losses["classical_batch_safeguard"].append(loss_naive)
         variant_infos["classical_batch_safeguard"].append(info_naive)
 
         model_full = copy.deepcopy(initial_model)
         loss_full, info_full = train_minibatch_anderson_classical(
-            model_full, X, y, batches, loss_fn, lr=0.05, momentum=0.7,
-            window=5, aa_interval=5, history_stride=1, safeguard_dataset="full"
+            model_full,
+            X,
+            y,
+            batches,
+            loss_fn,
+            lr=0.05,
+            momentum=0.7,
+            window=5,
+            aa_interval=5,
+            history_stride=1,
+            safeguard_dataset="full",
         )
         variant_losses["classical_full_safeguard"].append(loss_full)
         variant_infos["classical_full_safeguard"].append(info_full)
 
         model_sparse = copy.deepcopy(initial_model)
         loss_sparse, info_sparse = train_minibatch_anderson_classical(
-            model_sparse, X, y, batches, loss_fn, lr=0.05, momentum=0.7,
-            window=5, aa_interval=10, history_stride=5, safeguard_dataset="full"
+            model_sparse,
+            X,
+            y,
+            batches,
+            loss_fn,
+            lr=0.05,
+            momentum=0.7,
+            window=5,
+            aa_interval=10,
+            history_stride=5,
+            safeguard_dataset="full",
         )
         variant_losses["classical_sparse_full_safeguard"].append(loss_sparse)
         variant_infos["classical_sparse_full_safeguard"].append(info_sparse)
 
         model_ito = copy.deepcopy(initial_model)
         loss_ito, info_ito = train_minibatch_ito_xue(
-            model_ito, X, y, batches, loss_fn, lr=0.05, momentum=0.7,
-            window=5, aa_interval=10, snapshot_stride=5, safeguard=True
+            model_ito,
+            X,
+            y,
+            batches,
+            loss_fn,
+            lr=0.05,
+            momentum=0.7,
+            window=5,
+            aa_interval=10,
+            snapshot_stride=5,
+            safeguard=True,
         )
         variant_losses["ito_xue_full_safeguard"].append(loss_ito)
         variant_infos["ito_xue_full_safeguard"].append(info_ito)

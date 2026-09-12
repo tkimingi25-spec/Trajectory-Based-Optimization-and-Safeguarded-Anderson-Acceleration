@@ -1,17 +1,17 @@
-import copy
-import sys
 import os
-import time
+import sys
+
 import numpy as np
 import torch
 import torch.nn as nn
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.models import TinyMLP
 from src.data import get_tinymlp_data
-from src.training import train_baseline, train_with_anderson
+from src.models import TinyMLP
 from src.statistics import paired_analysis
+from src.training import train_baseline, train_with_anderson
+
 
 def run_adversarial_tuning_and_ablation():
     print("=" * 80)
@@ -19,12 +19,12 @@ def run_adversarial_tuning_and_ablation():
     print("=" * 80)
 
     loss_fn = nn.MSELoss()
-    seeds = list(range(4000, 4030)) # 30 matched seeds
-    
+    seeds = list(range(4000, 4030))  # 30 matched seeds
+
     # 1. Extensive LR sweep for Adam: finding best Adam tuning
     adam_lrs = [0.0005, 0.001, 0.003, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2]
     print(f"\n[Step 1] Sweeping Adam learning rates over {adam_lrs} across 30 seeds...")
-    
+
     adam_sweep_results = {}
     for lr in adam_lrs:
         losses = []
@@ -45,7 +45,9 @@ def run_adversarial_tuning_and_ablation():
 
     # Find the best performing Adam lr
     best_adam_lr = min(adam_sweep_results.keys(), key=lambda lr: np.mean(adam_sweep_results[lr]))
-    print(f"\n=> Best Tuned Adam Learning Rate: lr={best_adam_lr} (Mean MSE: {np.mean(adam_sweep_results[best_adam_lr]):.6f})")
+    print(
+        f"\n=> Best Tuned Adam Learning Rate: lr={best_adam_lr} (Mean MSE: {np.mean(adam_sweep_results[best_adam_lr]):.6f})"
+    )
 
     # 2. Extensive LR sweep for SGD-M
     sgdm_lrs = [0.01, 0.02, 0.05, 0.1, 0.2]
@@ -63,7 +65,9 @@ def run_adversarial_tuning_and_ablation():
         print(f"  SGD-M lr={lr:<6} -> Mean MSE: {np.mean(losses):.6f} (Std: {np.std(losses):.6f})")
 
     best_sgdm_lr = min(sgdm_sweep_results.keys(), key=lambda lr: np.mean(sgdm_sweep_results[lr]))
-    print(f"\n=> Best Tuned SGD-M Learning Rate: lr={best_sgdm_lr} (Mean MSE: {np.mean(sgdm_sweep_results[best_sgdm_lr]):.6f})")
+    print(
+        f"\n=> Best Tuned SGD-M Learning Rate: lr={best_sgdm_lr} (Mean MSE: {np.mean(sgdm_sweep_results[best_sgdm_lr]):.6f})"
+    )
 
     # 3. Sweep Anderson (Ours) with best base SGD-M lr
     print(f"\n[Step 3] Running Safeguarded Anderson on base lr={best_sgdm_lr}...")
@@ -82,9 +86,11 @@ def run_adversarial_tuning_and_ablation():
     print("\n" + "=" * 90)
     print("  RAW PER-SEED FINAL LOSS VALUES (30 SEEDS: 4000 to 4029)")
     print("=" * 90)
-    print(f"{'Seed':<6} | {'Best Adam (' + str(best_adam_lr) + ')':<22} | {'Best SGD-M (' + str(best_sgdm_lr) + ')':<22} | {'Safeguarded Anderson':<22} | {'Delta vs Adam':<12}")
+    print(
+        f"{'Seed':<6} | {'Best Adam (' + str(best_adam_lr) + ')':<22} | {'Best SGD-M (' + str(best_sgdm_lr) + ')':<22} | {'Safeguarded Anderson':<22} | {'Delta vs Adam':<12}"
+    )
     print("-" * 90)
-    
+
     adam_best_losses = adam_sweep_results[best_adam_lr]
     sgdm_best_losses = sgdm_sweep_results[best_sgdm_lr]
 
@@ -105,7 +111,9 @@ def run_adversarial_tuning_and_ablation():
     # Anderson vs Best Adam
     res_adam = paired_analysis(adam_best_losses, anderson_losses)
     print(f"\nSafeguarded Anderson vs. Best Tuned Adam (lr={best_adam_lr}):")
-    print(f"  * Anderson Wins:           {res_adam['wins']} / {res_adam['n_seeds']} ({res_adam['wins']/res_adam['n_seeds']*100:.1f}%)")
+    print(
+        f"  * Anderson Wins:           {res_adam['wins']} / {res_adam['n_seeds']} ({res_adam['wins']/res_adam['n_seeds']*100:.1f}%)"
+    )
     print(f"  * Relative Loss Reduction: {res_adam['rel_reduction_pct']:+.2f}%")
     print(f"  * Paired t-test p-value:   {res_adam['p_t']:.4e}")
     print(f"  * Wilcoxon signed-rank p:  {res_adam['p_w']:.4e}")
@@ -113,10 +121,13 @@ def run_adversarial_tuning_and_ablation():
     # Anderson vs Best SGD-M
     res_sgdm = paired_analysis(sgdm_best_losses, anderson_losses)
     print(f"\nSafeguarded Anderson vs. Best Tuned SGD-M (lr={best_sgdm_lr}):")
-    print(f"  * Anderson Wins:           {res_sgdm['wins']} / {res_sgdm['n_seeds']} ({res_sgdm['wins']/res_sgdm['n_seeds']*100:.1f}%)")
+    print(
+        f"  * Anderson Wins:           {res_sgdm['wins']} / {res_sgdm['n_seeds']} ({res_sgdm['wins']/res_sgdm['n_seeds']*100:.1f}%)"
+    )
     print(f"  * Relative Loss Reduction: {res_sgdm['rel_reduction_pct']:+.2f}%")
     print(f"  * Paired t-test p-value:   {res_sgdm['p_t']:.4e}")
     print(f"  * Wilcoxon signed-rank p:  {res_sgdm['p_w']:.4e}")
+
 
 if __name__ == "__main__":
     run_adversarial_tuning_and_ablation()

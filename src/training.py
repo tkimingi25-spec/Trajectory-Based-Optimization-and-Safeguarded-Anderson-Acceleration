@@ -9,25 +9,26 @@ Implements:
 """
 
 import copy
+
 import numpy as np
 import torch
-import torch.nn as nn
+
 from .anderson import (
-    get_full_state,
-    set_full_state,
-    get_position_only,
-    set_position_only,
     anderson_extrapolate_classical,
     anderson_extrapolate_ito_xue,
+    get_full_state,
+    get_position_only,
     passes_strict_descent_safeguard,
+    set_full_state,
+    set_position_only,
     state_is_sane,
 )
 from .statistics import paired_analysis
 
-
 # ---------------------------------------------------------------------------
 # Training Loops
 # ---------------------------------------------------------------------------
+
 
 def train_baseline(model, X, y, loss_fn, steps=100, lr=0.05, momentum=0.7, log_trajectory=False):
     """
@@ -46,7 +47,7 @@ def train_baseline(model, X, y, loss_fn, steps=100, lr=0.05, momentum=0.7, log_t
             pred = model(X)
             return (loss_fn(pred, y) if y is not None else loss_fn(pred, X)).item()
 
-    for step in range(steps):
+    for _step in range(steps):
         optimizer.zero_grad()
         pred = model(X)
         loss = loss_fn(pred, y) if y is not None else loss_fn(pred, X)
@@ -181,7 +182,6 @@ def train_with_anderson_ito_xue(
     Ito & Xue (2025) Anderson-type prediction-residual snapshot combination.
     """
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
-    D = sum(p.numel() for p in model.parameters())
 
     def eval_loss():
         with torch.no_grad():
@@ -226,9 +226,7 @@ def train_with_anderson_ito_xue(
 
         if step > 0 and step % aa_interval == 0 and len(param_history) >= 2:
             jumps_attempted += 1
-            x_new = anderson_extrapolate_ito_xue(
-                param_history, pred_history, y_targets, reg=reg
-            )
+            x_new = anderson_extrapolate_ito_xue(param_history, pred_history, y_targets, reg=reg)
 
             if x_new is not None:
                 current_params = get_position_only(model)
@@ -257,6 +255,7 @@ def train_with_anderson_ito_xue(
 # ---------------------------------------------------------------------------
 # Seed-Matched Paired Comparison Runner
 # ---------------------------------------------------------------------------
+
 
 def run_paired_comparison(
     model_fn,
@@ -296,9 +295,7 @@ def run_paired_comparison(
         model_aa = copy.deepcopy(model_base)
 
         # Run baseline
-        loss_base, _ = train_baseline(
-            model_base, X, y, loss_fn, steps=steps, lr=lr, momentum=momentum
-        )
+        loss_base, _ = train_baseline(model_base, X, y, loss_fn, steps=steps, lr=lr, momentum=momentum)
 
         # Run Anderson
         if method == "classical":

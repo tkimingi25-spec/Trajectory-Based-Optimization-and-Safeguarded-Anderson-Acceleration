@@ -20,10 +20,10 @@ from src.data import get_digits_data
 from src.landscapes import make_baldi_hornik_saddle
 from src.models import SmallCNN, SmallCNNTanh, TinyMLP
 
-
 # ---------------------------------------------------------------------------
 # Seed control
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(autouse=True)
 def set_deterministic_seeds():
@@ -38,7 +38,7 @@ def set_deterministic_seeds():
 # ---------------------------------------------------------------------------
 
 CI_SEEDS = range(1000, 1002)  # 2 seeds
-CI_STEPS = 5                   # 5 training steps
+CI_STEPS = 5  # 5 training steps
 
 
 @pytest.fixture
@@ -54,6 +54,7 @@ def ci_steps():
 # ---------------------------------------------------------------------------
 # Model fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def tiny_mlp():
@@ -80,6 +81,7 @@ def small_cnn_tanh():
 # Data fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def digits_data():
     """Sklearn digits dataset as tensors."""
@@ -104,6 +106,7 @@ def saddle_landscape_1():
 # ---------------------------------------------------------------------------
 # Loss function fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def mse_loss():

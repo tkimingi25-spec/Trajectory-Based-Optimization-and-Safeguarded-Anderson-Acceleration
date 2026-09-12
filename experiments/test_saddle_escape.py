@@ -11,15 +11,14 @@ Demonstrates why 5 intuitive curvature-informed mechanisms failed:
 
 import os
 import sys
+
 import numpy as np
 import torch
-import torch.nn as nn
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.landscapes import make_baldi_hornik_saddle, compute_full_hessian
-from src.diagnostics import estimate_lambda_min
-from src.statistics import paired_analysis, format_results_table
+from src.landscapes import compute_full_hessian, make_baldi_hornik_saddle
+from src.statistics import format_results_table, paired_analysis
 
 
 def test_mechanism1_naive_escape():
@@ -48,7 +47,7 @@ def test_mechanism1_naive_escape():
             idx = 0
             for p in m_b.parameters():
                 n = p.numel()
-                p.add_(torch.tensor(eps[idx:idx+n], dtype=p.dtype).view_as(p))
+                p.add_(torch.tensor(eps[idx : idx + n], dtype=p.dtype).view_as(p))
                 idx += n
 
         opt_b = torch.optim.SGD(m_b.parameters(), lr=0.05, momentum=0.7)
@@ -65,7 +64,7 @@ def test_mechanism1_naive_escape():
             idx = 0
             for p in m_e.parameters():
                 n = p.numel()
-                p.add_(torch.tensor((eps + 0.5 * v_min)[idx:idx+n], dtype=p.dtype).view_as(p))
+                p.add_(torch.tensor((eps + 0.5 * v_min)[idx : idx + n], dtype=p.dtype).view_as(p))
                 idx += n
 
         opt_e = torch.optim.SGD(m_e.parameters(), lr=0.05, momentum=0.7)
@@ -106,7 +105,7 @@ def test_mechanism4_generalization_failure():
             idx = 0
             for p in m_b.parameters():
                 n = p.numel()
-                p.add_(torch.tensor(eps[idx:idx+n], dtype=p.dtype).view_as(p))
+                p.add_(torch.tensor(eps[idx : idx + n], dtype=p.dtype).view_as(p))
                 idx += n
         opt_b = torch.optim.SGD(m_b.parameters(), lr=0.05, momentum=0.7)
         for _ in range(150):
@@ -121,7 +120,7 @@ def test_mechanism4_generalization_failure():
             idx = 0
             for p in m_bl.parameters():
                 n = p.numel()
-                p.add_(torch.tensor(eps[idx:idx+n], dtype=p.dtype).view_as(p))
+                p.add_(torch.tensor(eps[idx : idx + n], dtype=p.dtype).view_as(p))
                 idx += n
         opt_bl = torch.optim.SGD(m_bl.parameters(), lr=0.05, momentum=0.7)
         for step in range(150):
@@ -133,8 +132,8 @@ def test_mechanism4_generalization_failure():
                 idx = 0
                 for p in m_bl.parameters():
                     n = p.numel()
-                    buf = opt_bl.state[p]['momentum_buffer']
-                    buf.add_(torch.tensor(gamma * v_min2[idx:idx+n], dtype=p.dtype).view_as(p))
+                    buf = opt_bl.state[p]["momentum_buffer"]
+                    buf.add_(torch.tensor(gamma * v_min2[idx : idx + n], dtype=p.dtype).view_as(p))
                     idx += n
         blended_losses.append(loss_fn2(m_bl(X2), X2).item())
 

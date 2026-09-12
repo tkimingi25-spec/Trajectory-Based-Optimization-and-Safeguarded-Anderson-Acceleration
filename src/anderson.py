@@ -14,10 +14,10 @@ Without it, both catastrophically fail (documented in §5.10).
 import numpy as np
 import torch
 
-
 # ---------------------------------------------------------------------------
 # State management: position + velocity concatenation
 # ---------------------------------------------------------------------------
+
 
 def get_full_state(model, optimizer, D):
     """
@@ -41,8 +41,8 @@ def get_full_state(model, optimizer, D):
     w = torch.cat([p.detach().flatten() for p in model.parameters()])
     v_parts = []
     for p in model.parameters():
-        if p in optimizer.state and 'momentum_buffer' in optimizer.state[p]:
-            v_parts.append(optimizer.state[p]['momentum_buffer'].detach().flatten())
+        if p in optimizer.state and "momentum_buffer" in optimizer.state[p]:
+            v_parts.append(optimizer.state[p]["momentum_buffer"].detach().flatten())
         else:
             v_parts.append(torch.zeros_like(p).flatten())
     v = torch.cat(v_parts)
@@ -63,12 +63,10 @@ def set_full_state(model, optimizer, state_vec, D):
     idx = 0
     for p in model.parameters():
         n = p.numel()
-        p.data.copy_(torch.tensor(w[idx:idx + n], dtype=p.dtype).view_as(p))
+        p.data.copy_(torch.tensor(w[idx : idx + n], dtype=p.dtype).view_as(p))
         if p not in optimizer.state:
             optimizer.state[p] = {}
-        optimizer.state[p]['momentum_buffer'] = (
-            torch.tensor(v[idx:idx + n], dtype=p.dtype).view_as(p)
-        )
+        optimizer.state[p]["momentum_buffer"] = torch.tensor(v[idx : idx + n], dtype=p.dtype).view_as(p)
         idx += n
 
 
@@ -82,13 +80,14 @@ def set_position_only(model, w_vec):
     idx = 0
     for p in model.parameters():
         n = p.numel()
-        p.data.copy_(torch.tensor(w_vec[idx:idx + n], dtype=p.dtype).view_as(p))
+        p.data.copy_(torch.tensor(w_vec[idx : idx + n], dtype=p.dtype).view_as(p))
         idx += n
 
 
 # ---------------------------------------------------------------------------
 # Classical Type-II Anderson acceleration (Walker & Ni 2011)
 # ---------------------------------------------------------------------------
+
 
 def anderson_extrapolate_classical(states, window, reg=1e-6):
     """
@@ -109,12 +108,12 @@ def anderson_extrapolate_classical(states, window, reg=1e-6):
     Returns:
         numpy array (extrapolated state) or None if insufficient history
     """
-    recent = states[-(window + 1):]
+    recent = states[-(window + 1) :]
     if len(recent) < window + 1:
         return None
 
     X_hist = np.array(recent[:-1])  # states 0..m-1
-    G_hist = np.array(recent[1:])   # states 1..m (the "g(x)" iterates)
+    G_hist = np.array(recent[1:])  # states 1..m (the "g(x)" iterates)
 
     # Fixed-point residuals: f_i = g(x_i) - x_i
     F = G_hist - X_hist
@@ -148,6 +147,7 @@ def anderson_extrapolate_classical(states, window, reg=1e-6):
 # ---------------------------------------------------------------------------
 # Ito & Xue formulation (prediction-residual snapshot combination)
 # ---------------------------------------------------------------------------
+
 
 def anderson_extrapolate_ito_xue(param_snapshots, predictions, targets, reg=1e-6):
     """
@@ -212,6 +212,7 @@ def anderson_extrapolate_ito_xue(param_snapshots, predictions, targets, reg=1e-6
 # ---------------------------------------------------------------------------
 # Safeguard utilities
 # ---------------------------------------------------------------------------
+
 
 def passes_strict_descent_safeguard(new_loss, old_loss):
     """

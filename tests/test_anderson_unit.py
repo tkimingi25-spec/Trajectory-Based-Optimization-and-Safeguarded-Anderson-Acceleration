@@ -8,12 +8,10 @@ Tests cover:
 - Safeguard and sanity check utilities
 """
 
-import copy
 import os
 import sys
 
 import numpy as np
-import pytest
 import torch
 import torch.nn as nn
 
@@ -90,7 +88,7 @@ class TestClassicalAnderson:
         target = rng.standard_normal(dim)
         states = []
         x = rng.standard_normal(dim)
-        for i in range(window + 2):
+        for _i in range(window + 2):
             x = 0.5 * x + 0.5 * target + 0.01 * rng.standard_normal(dim)
             states.append(x.copy())
         return states

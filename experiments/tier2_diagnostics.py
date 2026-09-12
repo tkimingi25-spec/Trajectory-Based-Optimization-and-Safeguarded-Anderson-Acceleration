@@ -10,23 +10,22 @@ Demonstrates:
 
 import os
 import sys
+
 import numpy as np
 import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.models import TinyMLP
 from src.data import get_tinymlp_data
 from src.diagnostics import (
-    trajectory_pca,
-    hessian_vector_product_autograd,
-    estimate_lambda_min,
-    saddle_check,
     ExplosionGuard,
+    estimate_lambda_min,
+    hessian_vector_product_autograd,
+    saddle_check,
+    trajectory_pca,
 )
-from src.training import train_baseline
+from src.models import TinyMLP
 
 
 def test_trajectory_pca_and_saddle_detector():
@@ -62,7 +61,7 @@ def test_trajectory_pca_and_saddle_detector():
             def apply_hv(v):
                 return hessian_vector_product_autograd(model, loss_fn, X, y, v)
 
-            report = saddle_check(gnorm, apply_hv, D, grad_norm_threshold=0.05, iters=150, seed=step+1)
+            report = saddle_check(gnorm, apply_hv, D, grad_norm_threshold=0.05, iters=150, seed=step + 1)
             checkpoint_reports.append((step, loss.item(), gnorm, report["lambda_min"], report["saddle_flag"]))
 
         optimizer.step()
@@ -72,17 +71,19 @@ def test_trajectory_pca_and_saddle_detector():
     # Run Trajectory PCA
     W = np.array(trajectory)
     explained_var, Vt, projections = trajectory_pca(W)
-    print(f"Trajectory PCA Top-5 components:")
+    print("Trajectory PCA Top-5 components:")
     for i in range(min(5, len(explained_var))):
         print(f"  PC{i+1}: {explained_var[i]*100:.2f}%")
-    print(f"Top-2 Total: {(explained_var[0] + explained_var[1])*100:.2f}% | Top-5 Total: {sum(explained_var[:5])*100:.2f}%")
+    print(
+        f"Top-2 Total: {(explained_var[0] + explained_var[1])*100:.2f}% | Top-5 Total: {sum(explained_var[:5])*100:.2f}%"
+    )
 
     print("\nCheckpoint Saddle Diagnostics (Strict Gating):")
     print(f"{'Step':<6} | {'Loss':<8} | {'Grad Norm':<10} | {'lambda_min':<10} | {'Saddle Triggered?'}")
     print("-" * 55)
-    for step, l, gn, lmin, flag in checkpoint_reports:
+    for step, loss_val, gn, lmin, flag in checkpoint_reports:
         lmin_str = f"{lmin:.4f}" if lmin is not None else "Skipped"
-        print(f"{step:<6} | {l:<8.4f} | {gn:<10.4f} | {lmin_str:<10} | {flag}")
+        print(f"{step:<6} | {loss_val:<8.4f} | {gn:<10.4f} | {lmin_str:<10} | {flag}")
     print(">> All checkpoints correctly avoided false positives despite negative curvature!\n")
 
 
@@ -150,7 +151,9 @@ def test_explosion_guard():
         if not passed:
             break
 
-    print(f"Divergent Run (lr=8.0): Guard triggered at step {guard_div.trigger_step} (delta={guard_div.trigger_delta:.2f} > 3.0)")
+    print(
+        f"Divergent Run (lr=8.0): Guard triggered at step {guard_div.trigger_step} (delta={guard_div.trigger_delta:.2f} > 3.0)"
+    )
     assert guard_div.triggered and guard_div.trigger_step == 0, "Guard failed to catch explosive step at step 0!"
     print(">> Explosion guard positive & negative controls PASSED.\n")
 

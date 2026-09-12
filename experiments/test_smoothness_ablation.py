@@ -48,10 +48,12 @@ def run_activation_lr(model_fn, X, y, loss_fn, seeds, lr, steps, momentum, windo
         )
         baseline_losses.append(loss_b)
         anderson_losses.append(loss_aa)
-        jump_counts.append({
-            "attempted": info["jumps_attempted"],
-            "accepted": info["jumps_accepted"],
-        })
+        jump_counts.append(
+            {
+                "attempted": info["jumps_attempted"],
+                "accepted": info["jumps_accepted"],
+            }
+        )
 
     return paired_analysis(baseline_losses, anderson_losses), {
         "baseline_losses": baseline_losses,

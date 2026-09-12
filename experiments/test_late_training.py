@@ -13,22 +13,23 @@ Protocol:
 - Trajectory tracking: Step-by-step loss logging to identify crossover dynamics
 """
 
-import os
-import sys
 import copy
 import json
+import os
+import sys
+
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.models import SmallCNNTanh
 from src.data import get_digits_data
-from src.training import train_baseline, train_with_anderson
-from src.statistics import paired_analysis, format_results_table
+from src.models import SmallCNNTanh
 from src.provenance import write_experiment_result
+from src.statistics import format_results_table, paired_analysis
+from src.training import train_baseline, train_with_anderson
 
 
 def run_late_training_experiment(horizons=(100, 250, 500, 1000), n_seeds=60, seed_start=8000):
@@ -54,7 +55,7 @@ def run_late_training_experiment(horizons=(100, 250, 500, 1000), n_seeds=60, see
             model_b = SmallCNNTanh()
             model_aa = copy.deepcopy(model_b)
 
-            log_traj = (T == max(horizons) and i < 10)  # Log trajectories for first 10 seeds at longest horizon
+            log_traj = max(horizons) == T and i < 10  # Log trajectories for first 10 seeds at longest horizon
 
             loss_b, info_b = train_baseline(
                 model_b, X, y, loss_fn, steps=T, lr=0.1, momentum=0.7, log_trajectory=log_traj
@@ -131,21 +132,21 @@ def plot_results(horizons, horizon_results, detailed_trajectories):
     reductions = [horizon_results[T]["rel_reduction_pct"] for T in horizons]
     win_rates = [horizon_results[T]["wins"] / horizon_results[T]["n_seeds"] * 100 for T in horizons]
 
-    color = 'tab:blue'
-    axs[0].set_xlabel('Training Steps (Horizon T)', fontsize=11)
-    axs[0].set_ylabel('Loss Reduction (%)', color=color, fontsize=11)
-    line1 = axs[0].plot(horizons, reductions, 'o-', color=color, linewidth=2, label='Loss Reduction %')
-    axs[0].tick_params(axis='y', labelcolor=color)
+    color = "tab:blue"
+    axs[0].set_xlabel("Training Steps (Horizon T)", fontsize=11)
+    axs[0].set_ylabel("Loss Reduction (%)", color=color, fontsize=11)
+    axs[0].plot(horizons, reductions, "o-", color=color, linewidth=2, label="Loss Reduction %")
+    axs[0].tick_params(axis="y", labelcolor=color)
     axs[0].grid(True, alpha=0.3)
 
     ax0_twin = axs[0].twinx()
-    color2 = 'tab:green'
-    ax0_twin.set_ylabel('Win Rate (%)', color=color2, fontsize=11)
-    line2 = ax0_twin.plot(horizons, win_rates, 's--', color=color2, linewidth=2, label='Win Rate %')
-    ax0_twin.tick_params(axis='y', labelcolor=color2)
+    color2 = "tab:green"
+    ax0_twin.set_ylabel("Win Rate (%)", color=color2, fontsize=11)
+    ax0_twin.plot(horizons, win_rates, "s--", color=color2, linewidth=2, label="Win Rate %")
+    ax0_twin.tick_params(axis="y", labelcolor=color2)
     ax0_twin.set_ylim([0, 105])
 
-    axs[0].set_title('Anderson Advantage Across Training Horizons', fontsize=12)
+    axs[0].set_title("Anderson Advantage Across Training Horizons", fontsize=12)
 
     # 2. Step-by-step Loss Trajectory Average
     if len(detailed_trajectories["baseline"]) > 0:
@@ -155,12 +156,12 @@ def plot_results(horizons, horizon_results, detailed_trajectories):
         mean_aa = aa_arr.mean(axis=0)
         steps = np.arange(len(mean_base))
 
-        axs[1].semilogy(steps, mean_base, 'r-', label='Baseline SGD', alpha=0.8)
-        axs[1].semilogy(steps, mean_aa, 'b-', label='Safeguarded Anderson', alpha=0.8)
-        axs[1].set_xlabel('Step', fontsize=11)
-        axs[1].set_ylabel('CrossEntropy Loss (log scale)', fontsize=11)
-        axs[1].set_title('Mean Trajectory Evolution (10 Seeds)', fontsize=12)
-        axs[1].grid(True, alpha=0.3, which='both')
+        axs[1].semilogy(steps, mean_base, "r-", label="Baseline SGD", alpha=0.8)
+        axs[1].semilogy(steps, mean_aa, "b-", label="Safeguarded Anderson", alpha=0.8)
+        axs[1].set_xlabel("Step", fontsize=11)
+        axs[1].set_ylabel("CrossEntropy Loss (log scale)", fontsize=11)
+        axs[1].set_title("Mean Trajectory Evolution (10 Seeds)", fontsize=12)
+        axs[1].grid(True, alpha=0.3, which="both")
         axs[1].legend()
 
     plt.tight_layout()

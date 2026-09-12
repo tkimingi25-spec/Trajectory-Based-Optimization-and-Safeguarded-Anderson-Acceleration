@@ -10,13 +10,14 @@ Implements:
 import numpy as np
 import torch
 import torch.nn as nn
-from .models import LinearAutoencoder
-from .data import get_baldi_hornik_data
 
+from .data import get_baldi_hornik_data
+from .models import LinearAutoencoder
 
 # ---------------------------------------------------------------------------
 # Tier 1: Quadratic Ravine Optimization (§3.4)
 # ---------------------------------------------------------------------------
+
 
 def run_quadratic_optimization(steps=400, lr=0.0013, momentum=0.7, a=20.0, b=1.0, seed=42):
     """
@@ -37,7 +38,7 @@ def run_quadratic_optimization(steps=400, lr=0.0013, momentum=0.7, a=20.0, b=1.0
     trajectory = []
 
     for step in range(steps):
-        loss = 0.5 * (a * (w1 ** 2) + b * (w2 ** 2))
+        loss = 0.5 * (a * (w1**2) + b * (w2**2))
         grad_w1 = a * w1
         grad_w2 = b * w2
         record = {
@@ -62,16 +63,13 @@ def verify_monotonic_trajectory(trajectory):
     Verify that a 2D trajectory is strictly monotonic in |w1|, |w2|, and loss.
     """
     w1_increases = sum(
-        1 for i in range(1, len(trajectory))
-        if abs(trajectory[i]["w1"]) > abs(trajectory[i - 1]["w1"]) + 1e-9
+        1 for i in range(1, len(trajectory)) if abs(trajectory[i]["w1"]) > abs(trajectory[i - 1]["w1"]) + 1e-9
     )
     w2_increases = sum(
-        1 for i in range(1, len(trajectory))
-        if abs(trajectory[i]["w2"]) > abs(trajectory[i - 1]["w2"]) + 1e-9
+        1 for i in range(1, len(trajectory)) if abs(trajectory[i]["w2"]) > abs(trajectory[i - 1]["w2"]) + 1e-9
     )
     loss_increases = sum(
-        1 for i in range(1, len(trajectory))
-        if trajectory[i]["loss"] > trajectory[i - 1]["loss"] + 1e-9
+        1 for i in range(1, len(trajectory)) if trajectory[i]["loss"] > trajectory[i - 1]["loss"] + 1e-9
     )
     return w1_increases, w2_increases, loss_increases
 
@@ -79,6 +77,7 @@ def verify_monotonic_trajectory(trajectory):
 # ---------------------------------------------------------------------------
 # Tier 2 & 3: Baldi-Hornik Strict Saddle Models (§5.3)
 # ---------------------------------------------------------------------------
+
 
 def make_baldi_hornik_saddle(saddle_type=1):
     """

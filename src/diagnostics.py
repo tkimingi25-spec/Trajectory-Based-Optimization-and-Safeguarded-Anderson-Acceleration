@@ -12,10 +12,10 @@ Implements:
 import numpy as np
 import torch
 
-
 # ---------------------------------------------------------------------------
 # Trajectory PCA (§4.3)
 # ---------------------------------------------------------------------------
+
 
 def trajectory_pca(trajectory_matrix):
     """
@@ -34,11 +34,9 @@ def trajectory_pca(trajectory_matrix):
     W_centered = W - W.mean(axis=0, keepdims=True)
 
     U, S, Vt = np.linalg.svd(W_centered, full_matrices=False)
-    explained_variance = (S ** 2) / (len(W) - 1)
+    explained_variance = (S**2) / (len(W) - 1)
     total_var = explained_variance.sum()
-    explained_variance_ratio = (
-        explained_variance / total_var if total_var > 0 else np.zeros_like(explained_variance)
-    )
+    explained_variance_ratio = explained_variance / total_var if total_var > 0 else np.zeros_like(explained_variance)
 
     projections = U * S
     return explained_variance_ratio, Vt, projections
@@ -47,6 +45,7 @@ def trajectory_pca(trajectory_matrix):
 # ---------------------------------------------------------------------------
 # Hessian-Vector Products (§4.3)
 # ---------------------------------------------------------------------------
+
 
 def hessian_vector_product_autograd(model, loss_fn, X, y, v):
     """
@@ -94,6 +93,7 @@ def pearlmutter_hv_fd(grad_fn, w, v, r=1e-5):
 # ---------------------------------------------------------------------------
 # Shifted Power Iteration for Minimum Eigenvalue (§4.3)
 # ---------------------------------------------------------------------------
+
 
 def _power_iterate(apply_op, D, iters=300, seed=1):
     """Run power iteration on a linear operator."""
@@ -178,11 +178,13 @@ def saddle_check(grad_norm, apply_hv, D, grad_norm_threshold=0.05, iters=300, se
 # Step Explosion Guard (§4.4)
 # ---------------------------------------------------------------------------
 
+
 class ExplosionGuard:
     """
     Monitors parameter update step sizes (||Delta w_t||) to catch numerical
     divergence before loss explodes to infinity/NaN.
     """
+
     def __init__(self, max_step_norm=3.0):
         self.max_step_norm = max_step_norm
         self.triggered = False

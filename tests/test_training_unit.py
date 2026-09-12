@@ -8,12 +8,10 @@ Tests verify:
 - Paired comparison runner works end-to-end
 """
 
-import copy
 import os
 import sys
 
 import numpy as np
-import pytest
 import torch
 import torch.nn as nn
 
@@ -80,8 +78,16 @@ class TestTrainWithAnderson:
         y = torch.randn(32, 1)
 
         final_loss, info = train_with_anderson(
-            model, X, y, nn.MSELoss(), steps=15, lr=0.05, momentum=0.7,
-            window=3, aa_interval=5, safeguard=True,
+            model,
+            X,
+            y,
+            nn.MSELoss(),
+            steps=15,
+            lr=0.05,
+            momentum=0.7,
+            window=3,
+            aa_interval=5,
+            safeguard=True,
         )
 
         assert np.isfinite(final_loss)
@@ -93,7 +99,13 @@ class TestTrainWithAnderson:
         y = torch.randn(16, 1)
 
         _, info = train_with_anderson(
-            model, X, y, nn.MSELoss(), steps=15, window=3, aa_interval=5,
+            model,
+            X,
+            y,
+            nn.MSELoss(),
+            steps=15,
+            window=3,
+            aa_interval=5,
         )
 
         assert "losses" in info
@@ -109,7 +121,12 @@ class TestTrainWithAnderson:
         y = torch.randn(32, 1)
 
         final_loss, _ = train_with_anderson(
-            model, X, y, nn.MSELoss(), steps=20, safeguard=True,
+            model,
+            X,
+            y,
+            nn.MSELoss(),
+            steps=20,
+            safeguard=True,
         )
 
         assert np.isfinite(final_loss), f"Loss blew up: {final_loss}"
@@ -126,8 +143,17 @@ class TestTrainWithAndersonItoXue:
         y = torch.randn(32, 1)
 
         final_loss, info = train_with_anderson_ito_xue(
-            model, X, y, nn.MSELoss(), steps=15, lr=0.05, momentum=0.7,
-            window=3, aa_interval=5, safeguard=True, is_classification=False,
+            model,
+            X,
+            y,
+            nn.MSELoss(),
+            steps=15,
+            lr=0.05,
+            momentum=0.7,
+            window=3,
+            aa_interval=5,
+            safeguard=True,
+            is_classification=False,
         )
 
         assert np.isfinite(final_loss)
@@ -140,6 +166,7 @@ class TestPairedComparison:
 
     def test_runs_end_to_end(self):
         """Paired comparison should complete and return valid statistics."""
+
         def model_fn():
             return TinyMLP()
 
@@ -159,5 +186,5 @@ class TestPairedComparison:
         assert results["n_seeds"] == 2
         assert len(base_losses) == 2
         assert len(aa_losses) == 2
-        assert all(np.isfinite(l) for l in base_losses)
-        assert all(np.isfinite(l) for l in aa_losses)
+        assert all(np.isfinite(loss_item) for loss_item in base_losses)
+        assert all(np.isfinite(loss_item) for loss_item in aa_losses)

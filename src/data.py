@@ -10,7 +10,6 @@ Provides dataset generators for:
 import numpy as np
 import torch
 from sklearn.datasets import load_digits
-from sklearn.preprocessing import StandardScaler
 
 
 def get_digits_data(train_ratio=1.0, seed=42):

@@ -8,21 +8,20 @@ Demonstrates:
    as the historical tuned-condition positive result.
 """
 
+import copy
 import os
 import sys
-import copy
-import numpy as np
+
 import torch
 import torch.nn as nn
-import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.models import TinyMLP, SmallCNN, SmallCNNTanh
-from src.data import get_tinymlp_data, get_digits_data
-from src.training import train_baseline, train_with_anderson
-from src.statistics import paired_analysis, format_results_table
+from src.data import get_digits_data, get_tinymlp_data
+from src.models import SmallCNN, SmallCNNTanh, TinyMLP
 from src.provenance import write_experiment_result
+from src.statistics import format_results_table, paired_analysis
+from src.training import train_baseline, train_with_anderson
 
 
 def test_tinymlp():
@@ -87,7 +86,9 @@ def test_small_cnn_relu():
         config={"seeds": seeds, "steps": 100, "lr": 0.05, "momentum": 0.7, "window": 5, "aa_interval": 10},
         results=res,
         per_seed={"baseline_losses": baseline_losses, "anderson_losses": anderson_losses},
-        notes=["Use this as a ReLU null result for the tested hyperparameters, not as universal non-smooth activation proof."],
+        notes=[
+            "Use this as a ReLU null result for the tested hyperparameters, not as universal non-smooth activation proof."
+        ],
     )
     return res
 
@@ -121,7 +122,9 @@ def test_small_cnn_tanh():
         config={"seeds": seeds, "steps": 100, "lr": 0.1, "momentum": 0.7, "window": 5, "aa_interval": 10},
         results=res,
         per_seed={"baseline_losses": baseline_losses, "anderson_losses": anderson_losses},
-        notes=["This preserves the historical lr=0.1 Tanh run; use the smoothness ablation script for same-seed same-lr causal checks."],
+        notes=[
+            "This preserves the historical lr=0.1 Tanh run; use the smoothness ablation script for same-seed same-lr causal checks."
+        ],
     )
     return res
 
@@ -129,11 +132,11 @@ def test_small_cnn_tanh():
 def main():
     print("=" * 68)
     print("  Real-Network Benchmarks & Activation Smoothness Isolation")
-    print("=" * 68)
     res_mlp = test_tinymlp()
     res_relu = test_small_cnn_relu()
     res_tanh = test_small_cnn_tanh()
     print("=" * 68)
+    return {"mlp": res_mlp, "relu": res_relu, "tanh": res_tanh}
 
 
 if __name__ == "__main__":

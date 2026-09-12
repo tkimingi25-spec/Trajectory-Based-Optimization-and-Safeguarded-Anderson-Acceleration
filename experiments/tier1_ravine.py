@@ -8,8 +8,9 @@ Demonstrates:
 
 import os
 import sys
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -23,9 +24,7 @@ def main():
     print("=" * 68)
 
     # 1. Monotonic Ravine (Option A: a=20, b=1, lr=0.0013 < lr_critical=0.001334)
-    traj, a, b = run_quadratic_optimization(
-        steps=400, lr=0.0013, momentum=0.7, a=20.0, b=1.0, seed=42
-    )
+    traj, a, b = run_quadratic_optimization(steps=400, lr=0.0013, momentum=0.7, a=20.0, b=1.0, seed=42)
     w1_inc, w2_inc, loss_inc = verify_monotonic_trajectory(traj)
 
     print(f"Config: a={a}, b={b}, lr=0.0013, momentum=0.7, steps=400")
@@ -37,11 +36,8 @@ def main():
 
     # 2. Phase Portrait (Hypothesis 3: w1 vs. v1 spiral, lr=0.08, momentum=0.7)
     # The oscillatory configuration that demonstrates genuine phase-space spiraling
-    traj_osc, _, _ = run_quadratic_optimization(
-        steps=30, lr=0.08, momentum=0.7, a=20.0, b=1.0, seed=42
-    )
+    traj_osc, _, _ = run_quadratic_optimization(steps=30, lr=0.08, momentum=0.7, a=20.0, b=1.0, seed=42)
 
-    steps = [r["step"] for r in traj_osc]
     w1s = [r["w1"] for r in traj_osc]
     v1s = [r["v1"] for r in traj_osc]
     radii = [np.sqrt(w**2 + v**2) for w, v in zip(w1s, v1s)]

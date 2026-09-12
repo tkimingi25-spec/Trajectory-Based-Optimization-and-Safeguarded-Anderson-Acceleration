@@ -7,12 +7,11 @@ to enable exhaustive, many-seed statistical testing on CPU.
 
 import torch
 import torch.nn as nn
-import numpy as np
-
 
 # ---------------------------------------------------------------------------
 # TinyMLP — §4.3, §5.11 (D=49 parameters)
 # ---------------------------------------------------------------------------
+
 
 class TinyMLP(nn.Module):
     """
@@ -21,6 +20,7 @@ class TinyMLP(nn.Module):
     Used for the first real-network validation of trajectory PCA,
     saddle detection, and Anderson acceleration.
     """
+
     def __init__(self):
         super().__init__()
         self.fc1 = nn.Linear(4, 8)
@@ -34,6 +34,7 @@ class TinyMLP(nn.Module):
 # ---------------------------------------------------------------------------
 # SmallCNN — §5.12 (ReLU, D~9802 parameters, null result)
 # ---------------------------------------------------------------------------
+
 
 class SmallCNN(nn.Module):
     """
@@ -49,6 +50,7 @@ class SmallCNN(nn.Module):
         D = (1*8*3*3+8) + (8*16*3*3+16) + (256*32+32) + (32*10+10)
           = 80 + 1168 + 8224 + 330 = 9802
     """
+
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 8, 3, padding=1)
@@ -70,6 +72,7 @@ class SmallCNN(nn.Module):
 # SmallCNNTanh — §5.13 (tanh, same architecture; historical positive result)
 # ---------------------------------------------------------------------------
 
+
 class SmallCNNTanh(nn.Module):
     """
     Identical architecture to SmallCNN but with tanh activations.
@@ -78,6 +81,7 @@ class SmallCNNTanh(nn.Module):
     This supports the activation-smoothness hypothesis when paired with a
     same-seed, same-learning-rate ablation script.
     """
+
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(1, 8, 3, padding=1)
@@ -99,6 +103,7 @@ class SmallCNNTanh(nn.Module):
 # LinearAutoencoder — §5.3 (Baldi-Hornik strict saddle construction)
 # ---------------------------------------------------------------------------
 
+
 class LinearAutoencoder(nn.Module):
     """
     Linear autoencoder: enc (d -> k, no bias) -> dec (k -> d, no bias).
@@ -106,6 +111,7 @@ class LinearAutoencoder(nn.Module):
     architecture are projections onto k eigenvectors of the input covariance.
     The global optimum uses the top-k; any other k-subset is a strict saddle.
     """
+
     def __init__(self, d, k):
         super().__init__()
         self.enc = nn.Linear(d, k, bias=False)
@@ -123,4 +129,5 @@ def count_parameters(model):
 def clone_model(model):
     """Create a deep copy of a model with identical weights."""
     import copy
+
     return copy.deepcopy(model)

@@ -8,19 +8,19 @@ constructed strict saddle landscapes:
 3. Unsafeguarded failure check (demonstrating the necessity of strict descent)
 """
 
+import copy
 import os
 import sys
-import copy
+
 import numpy as np
 import torch
-import torch.nn as nn
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.landscapes import make_baldi_hornik_saddle
-from src.training import train_baseline, train_with_anderson
-from src.statistics import paired_analysis, format_results_table
 from src.provenance import write_experiment_result
+from src.statistics import format_results_table, paired_analysis
+from src.training import train_baseline, train_with_anderson
 
 
 def run_saddle_benchmark(saddle_type, seeds, window=5, aa_interval=10, reg=1e-6, safeguard=True):
@@ -38,7 +38,7 @@ def run_saddle_benchmark(saddle_type, seeds, window=5, aa_interval=10, reg=1e-6,
             idx = 0
             for p in model_b.parameters():
                 n = p.numel()
-                p.add_(torch.tensor(eps[idx:idx+n], dtype=p.dtype).view_as(p))
+                p.add_(torch.tensor(eps[idx : idx + n], dtype=p.dtype).view_as(p))
                 idx += n
 
         model_aa = copy.deepcopy(model_b)
@@ -79,7 +79,16 @@ def main():
     write_experiment_result(
         os.path.join("results", "test_anderson_saddle1.json"),
         experiment="Baldi-Hornik Saddle #1 baseline vs safeguarded Anderson",
-        config={"saddle_type": 1, "seeds": range(3000, 3030), "steps": 150, "lr": 0.05, "momentum": 0.7, "window": 5, "aa_interval": 10, "safeguard": True},
+        config={
+            "saddle_type": 1,
+            "seeds": range(3000, 3030),
+            "steps": 150,
+            "lr": 0.05,
+            "momentum": 0.7,
+            "window": 5,
+            "aa_interval": 10,
+            "safeguard": True,
+        },
         results=res_s1,
         per_seed={"baseline_losses": base_s1, "anderson_losses": aa_s1},
     )
@@ -91,7 +100,16 @@ def main():
     write_experiment_result(
         os.path.join("results", "test_anderson_saddle2.json"),
         experiment="Baldi-Hornik Saddle #2 baseline vs safeguarded Anderson",
-        config={"saddle_type": 2, "seeds": range(3000, 3030), "steps": 150, "lr": 0.05, "momentum": 0.7, "window": 5, "aa_interval": 10, "safeguard": True},
+        config={
+            "saddle_type": 2,
+            "seeds": range(3000, 3030),
+            "steps": 150,
+            "lr": 0.05,
+            "momentum": 0.7,
+            "window": 5,
+            "aa_interval": 10,
+            "safeguard": True,
+        },
         results=res_s2,
         per_seed={"baseline_losses": base_s2, "anderson_losses": aa_s2},
     )
@@ -101,12 +119,23 @@ def main():
     res_unsafeguarded, base_unsafeguarded, aa_unsafeguarded = run_saddle_benchmark(
         saddle_type=1, seeds=range(3000, 3005), safeguard=False
     )
-    print(f"Unsafeguarded Anderson Mean Loss: {res_unsafeguarded['mean_test']:.4f} vs Baseline: {res_unsafeguarded['mean_baseline']:.4f}")
+    print(
+        f"Unsafeguarded Anderson Mean Loss: {res_unsafeguarded['mean_test']:.4f} vs Baseline: {res_unsafeguarded['mean_baseline']:.4f}"
+    )
     print(f"Wins: {res_unsafeguarded['wins']}/5 (Extrapolations without safeguard blow up near saddle noise)")
     write_experiment_result(
         os.path.join("results", "test_anderson_saddle1_unsafeguarded.json"),
         experiment="Baldi-Hornik Saddle #1 baseline vs unsafeguarded Anderson",
-        config={"saddle_type": 1, "seeds": range(3000, 3005), "steps": 150, "lr": 0.05, "momentum": 0.7, "window": 5, "aa_interval": 10, "safeguard": False},
+        config={
+            "saddle_type": 1,
+            "seeds": range(3000, 3005),
+            "steps": 150,
+            "lr": 0.05,
+            "momentum": 0.7,
+            "window": 5,
+            "aa_interval": 10,
+            "safeguard": False,
+        },
         results=res_unsafeguarded,
         per_seed={"baseline_losses": base_unsafeguarded, "anderson_losses": aa_unsafeguarded},
     )

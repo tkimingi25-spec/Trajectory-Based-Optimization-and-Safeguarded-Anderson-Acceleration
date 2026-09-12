@@ -98,7 +98,11 @@ def format_results_table(results_dict, title="Experiment Results"):
         f"Mean Difference:          {r['mean_diff']:+.6f} ({r['rel_reduction_pct']:+.2f}%)",
         f"Win / Loss / Tie:         {r['wins']} / {r['losses']} / {r['ties']} (Win rate: {r['wins']/r['n_seeds']*100:.1f}%)",
         f"Paired t-test:            t = {r['t_stat']:.4f}, p = {r['p_t']:.4e}",
-        f"Wilcoxon signed-rank:     p = {r['p_w']:.4e}" if not np.isnan(r['p_w']) else "Wilcoxon: N/A (<10 non-zero diffs)",
+        (
+            f"Wilcoxon signed-rank:     p = {r['p_w']:.4e}"
+            if not np.isnan(r["p_w"])
+            else "Wilcoxon: N/A (<10 non-zero diffs)"
+        ),
         "-" * 68,
         f"Verdict:                  {'STATISTICALLY SIGNIFICANT BENEFIT' if (r['is_significant'] and r['mean_diff'] < 0) else ('SIGNIFICANT DEGRADATION' if (r['is_significant'] and r['mean_diff'] > 0) else 'NULL RESULT (No significant difference)')}",
         "=" * 68,
